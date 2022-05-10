@@ -26,19 +26,6 @@ def _init_parser():
 
 
 if __name__ == '__main__':
-    if os.getenv("op_type") == "GithubAction":
-        from collections import namedtuple
-
-        options = ["account", "password", "longitude", "latitude", "campus"]
-        opt_dict = {}
-        for opt in options:
-            v = os.getenv(opt)
-            if not v:
-                raise ParamError("参数{}填写有误: 不应该为{}".format(opt, v))
-            opt_dict[opt] = v
-        args = namedtuple("Args", options)(**opt_dict)
-        print(args)
-    else:
-        args = _init_parser()
+    args = _init_parser()
     s = HealthCheckInHelper(args.account, args.password)
     s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False)
