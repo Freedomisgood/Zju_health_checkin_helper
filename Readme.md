@@ -4,7 +4,7 @@
 > 
 > Python < 3.9
 > 
-> migrate from: https://github.com/Freedomisgood/When_Coding_in_ZJU/tree/main/Health_Checkin, 考虑到不少同学fork仓库是为了打卡, 因此
+> migrate from: https://github.com/Freedomisgood/When_Coding_in_ZJU/tree/main/Health_Checkin, 考虑到不少同学fork仓库是只是为了打卡代码, 因此
 > 决定还是将其抽离出来，作为一个单独的仓库。
 
 ## 前置依赖安装
@@ -25,9 +25,20 @@
 
 ## 设置打卡位置说明：
 
-1. 运行 health_checkin_helper.py 脚本: `python health_checkin_helper.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
-   - 如果不清楚参数设置可以运行`python health_checkin_helper.py --help`, 查看参数帮助
-2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/zju_health_checkin.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
+1. 运行 main.py 脚本: `python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
+   - 如果不清楚参数设置可以运行`python main.py --help`, 查看参数帮助
+   - 校区填写参考钉钉中显示的文本:
+     - 紫金港校区
+     - 玉泉校区
+     - 西溪校区
+     - 华家池校区
+     - 之江校区
+     - 海宁校区
+     - 舟山校区
+     - 宁波校区
+     - 工程师学院
+     - 杭州国际科创中心
+2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
 
 注: 如果使用了`pipenv`, 定时任务为: `30 10 * * * bash /home/mrli/dscripts/app/zju/start.sh` 
 ```bash
@@ -35,13 +46,28 @@
 # start.sh
 set -e
 cd `dirname $0`
-pipenv run python health_checkin_helper.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
+pipenv run python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
 ```
 
 
 ## 更新日志：
+- 2022年5月10日: 迁移仓库, 增加Github Action
 - 2022年5月8日: 增加验证码识别, 使用ddddocr库完成, 由于onnruntime需要<Py3.9, 所以现在只支持Python3-3.9
 - 2021年9月19日: 执行run中增加随机数延时，以实现每次打卡时间不同。
 - 2021年9月17日: Done V1~
 - 2021年10月17日：打卡接口数据有所调整，不再需要uid和id参数，因此在正则匹配上删除了这两个参数
 - 2021年12月5日: 紫金港有疫情情况, 表单参数有所改变
+
+# 附Github Action参数填写提醒
+1. 有需要用Github action的需要填写6个参数
+- GITHUB_TOKEN: 为了与本仓库更新同步, 如果没有则不保持同步
+- ACCOUNT: 统一认证账号(*必填)
+- PASSWORD: 统一认证账号密码(*必填)
+- LONGITUDE: 经度(*必填)
+- LATITUDE: 纬度(*必填)
+- CAMPUS: 校区(*必填), 具体选项见上文
+
+**GithubAction secrets参数填写教程图**:
+
+![action_secret](./assets/action_secret.jpg)
+

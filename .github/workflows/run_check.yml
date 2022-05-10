@@ -1,0 +1,55 @@
+name: AutoCheck
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+  watch:
+    types: [started]
+  schedule:
+    # 每天运行的时间
+    - cron: 45 10 * * *
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v2
+      # 保证同步更新
+      - name: Sync with upstream
+        # 不是目标仓库则为fork的仓库, 且有设置 ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.repository != 'Freedomisgood/Zju_health_checkin_helper' &&  secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.2
+        with:
+          # 上游同步仓库
+          upstream_sync_repo: Freedomisgood/Zju_health_checkin_helper
+          # 上游同步分支
+          upstream_sync_branch: main
+          # 本地要保持同步的目标分支
+          target_sync_branch: main
+          # 本地要保持同步的目标仓库token, 即当前仓库
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_pull_args: "-s recursive -Xtheirs"
+
+      - name: "Set python"
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.8"
+
+      - name: "Install pip"
+        run: python3 -m pip install --upgrade pip
+      - name: "install requirements"
+        run: pip install -r requirements.txt
+
+      - name: run the script
+        env:
+          account: ${{ secrets.ACCOUNT }}
+          password: ${{ secrets.PASSWORD }}
+          campus: ${{ secrets.CAMPUS }}
+          longitude: ${{ secrets.LONGITUDE }}
+          latitude: ${{ secrets.LATITUDE }}
+        # 如果嫌secrets填写麻烦, 下边的run可以改成 python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
+        run: python3 main.py

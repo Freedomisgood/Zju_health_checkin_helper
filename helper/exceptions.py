@@ -6,3 +6,8 @@
 class LoginError(Exception):
     """Login Exception"""
     pass
+
+
+class ParamError(Exception):
+    """参数输入错误"""
+    pass
