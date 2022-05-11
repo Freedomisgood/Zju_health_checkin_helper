@@ -4,9 +4,8 @@ import re
 import time
 
 import requests
-
 from helper.exceptions import LoginError
-from helper.pusher import push2pushplus
+from helper.ext import p
 from helper.utils import take_out_json, get_date, cope_with_captcha
 
 
@@ -180,8 +179,9 @@ class HealthCheckInHelper(ZJULogin):
         try:
             res = self.take_in(geo_info, campus=campus)
             print(res)
+            p.push("打卡成功, 返回消息为: {}".format(res), title="打卡成功")
         except Exception as e:  # 失败消息推送
-            push2pushplus("打卡失败, {}".format(e))
+            p.push("打卡失败, 原因为: {}".format(e), title="打卡失败")
 
 
 if __name__ == '__main__':

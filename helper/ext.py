@@ -3,4 +3,6 @@
 # @Author  : Mrli
 # @File    : ext.py
 import ddddocr
+from helper.pusher import Pusher
 ocr = ddddocr.DdddOcr(det=False, ocr=True)
+p = Pusher()

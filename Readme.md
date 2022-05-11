@@ -1,5 +1,5 @@
 # Health_Checkin_Helper
-> Python < 3.9
+> 3 < Python < 3.9
 > 
 > 健康打卡助手: 
 > - 将脚本部署于服务器上后，使用cron启动定时任务，每日打卡。
@@ -15,18 +15,18 @@
 注: 由于ddddocr用了不少机器学习的库, 还挺大的, 如果Python比较熟，可以创建虚拟环境使用`virtualenv daka`, `pipenv shell`
 ## 脚本说明：
 
-本工程提供两个脚本二选一使用：
+~~本工程提供两个脚本二选一使用~~：
 
-- ZJU_Clock_In
-- ZJU_Health_Checkin_Helper
+- ~~ZJU_Clock_In~~(×, 本仓库不再维护)
+- ★ZJU_Health_Checkin_Helper
   - cst: 是IP定位写死宁波浙软的版本
-  - all: 是会根据第一次手动运行获得的IP信息之后默认以这个地理信息打卡的版本
+  - all: 开放给所有校区同学使用的, 参数可自由填写
 
 区别于：[ZJU_Clock_In](https://github.com/lgaheilongzi/ZJU-Clock-In) 的地方是，ZJU_Clock_In采用的是利用缓存数据提交，如果没有缓存数据则需要手动先打一次卡；而Health_Checkin_Helper**没有这个限制**，直接可以打卡，并且可以**设置打卡位置**。
 
 ## 设置打卡位置说明：
 
-1. 运行 main.py 脚本: `python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
+1. 直接运行 main.py 脚本: `python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
    - 如果不清楚参数设置可以运行`python main.py --help`, 查看参数帮助
    - 校区填写参考钉钉中显示的文本:
      - 紫金港校区
@@ -40,6 +40,7 @@
      - 工程师学院
      - 杭州国际科创中心
 2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
+3. GithubAction: Fork仓库后, 根据要求参数填写secrets, 提示在下面↓。
 
 注: 如果使用了`pipenv`, 定时任务为: `30 10 * * * bash /home/mrli/dscripts/app/zju/start.sh` 
 ```bash
@@ -50,9 +51,34 @@ cd `dirname $0`
 pipenv run python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
 ```
 
+## 推送功能:
+> 需要修改`push_config.ini`内容, 对于Github Action没作支持
+>
+> 如果没设置`pusher_type`则不推送
+
+```ini
+[pusher]
+# pusher_type可填写[serverchan, dingding, pushplus]其中一个
+pusher_type =
+push_title = 健康打卡
+
+# https://sct.ftqq.com/
+[serverchan]
+sec_key =
+
+# https://open.dingtalk.com/document/group/custom-robot-access
+[dingding]
+access_token =
+secret =
+
+# http://www.pushplus.plus/
+[pushplus]
+pushplus_token = 
+```
+
 
 ## 更新日志：
-- 2022年5月10日: 迁移仓库, 增加Github Action
+- 2022年5月10日: 迁移仓库, 增加Github Action, 丰富pusher推送功能
 - 2022年5月8日: 增加验证码识别, 使用ddddocr库完成, 由于onnruntime需要<Py3.9, 所以现在只支持Python3-3.9
 - 2021年9月19日: 执行run中增加随机数延时，以实现每次打卡时间不同。
 - 2021年9月17日: Done V1~
