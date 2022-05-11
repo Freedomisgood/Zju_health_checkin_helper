@@ -1,8 +1,9 @@
 # Health_Checkin_Helper
-
-> 健康打卡助手: 将脚本部署于服务器上后，使用cron启动定时任务，每日打卡。
-> 
 > Python < 3.9
+> 
+> 健康打卡助手: 
+> - 将脚本部署于服务器上后，使用cron启动定时任务，每日打卡。
+> - Github Action
 > 
 > migrate from: https://github.com/Freedomisgood/When_Coding_in_ZJU/tree/main/Health_Checkin, 考虑到不少同学fork仓库是只是为了打卡代码, 因此
 > 决定还是将其抽离出来，作为一个单独的仓库。
