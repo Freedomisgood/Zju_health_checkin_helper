@@ -1,4 +1,4 @@
-import json
+import json5 as json
 import random
 import re
 import time
@@ -47,7 +47,7 @@ class ZJULogin(object):
         }
         res = self.sess.post(url=self.LOGIN_URL, data=data)
         # check if login successfully
-        if '用户名或密码错误' in res.content.decode():
+        if "统一身份认证平台" in res.content.decode():
             raise LoginError('登录失败，请核实账号密码重新登录')
         print("统一认证平台登录成功~")
         return self.sess
@@ -93,11 +93,11 @@ class HealthCheckInHelper(ZJULogin):
         # 获得id和uid参数-->新版接口里不需要这两个参数了
         res = self.sess.get(self.BASE_URL, headers=self.headers)
         html = res.content.decode()
-        new_info_tmp = json.loads(re.findall(r'def = ({[^\n]+})', html)[0])
-        # new_info_tmp = json5.loads(re.findall(r'def = (\{.*?\});', html, re.S)[0])
+        new_info_tmp: dict = json.loads(re.findall(r'var def ?= ?(\{.*?\});', html, re.S)[0])
+        # new_info_tmp = json.loads(re.findall(r'def = (\{.*?\});', html, re.S)[0])
         # print(new_info_tmp)
-        new_id = new_info_tmp['id']
-        new_uid = new_info_tmp['uid']
+        new_id = new_info_tmp.setdefault("id", "")
+        new_uid = new_info_tmp.setdefault("uid", "")
         # 拼凑geo信息
         lng, lat = address_component.get("streetNumber").get("location").split(",")
         geo_api_info_dict = {"type": "complete", "info": "SUCCESS", "status": 1,
