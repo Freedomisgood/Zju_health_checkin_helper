@@ -1,8 +1,8 @@
-import json5 as json
 import random
 import re
 import time
 
+import json5 as json
 import requests
 from helper.exceptions import LoginError
 from helper.ext import p
@@ -85,75 +85,90 @@ class HealthCheckInHelper(ZJULogin):
         response = self.sess.get('https://restapi.amap.com/v3/geocode/regeo', headers=self.headers, params=params, )
         return take_out_json(response.text)
 
-    def take_in(self, geo_info: dict, campus: str):
+    def take_in(self, geo_info: dict, campus: str, tryTimes: int = 3):
+        """
+        打卡执行函数
+        @param tryTimes 重试次数
+        """
         formatted_address = geo_info.get("regeocode").get("formatted_address")
         address_component = geo_info.get("regeocode").get("addressComponent")
         if not formatted_address or not address_component: return
 
-        # 获得id和uid参数-->新版接口里不需要这两个参数了
-        res = self.sess.get(self.BASE_URL, headers=self.headers)
-        html = res.content.decode()
-        new_info_tmp: dict = json.loads(re.findall(r'var def ?= ?(\{.*?\});', html, re.S)[0])
-        # new_info_tmp = json.loads(re.findall(r'def = (\{.*?\});', html, re.S)[0])
-        # print(new_info_tmp)
-        new_id = new_info_tmp.setdefault("id", "")
-        new_uid = new_info_tmp.setdefault("uid", "")
-        # 拼凑geo信息
-        lng, lat = address_component.get("streetNumber").get("location").split(",")
-        geo_api_info_dict = {"type": "complete", "info": "SUCCESS", "status": 1,
-                             "position": {"Q": lat, "R": lng, "lng": lng, "lat": lat},
-                             "message": "Get ipLocation success.Get address success.", "location_type": "ip",
-                             "accuracy": 40, "isConverted": "true", "addressComponent": address_component,
-                             "formattedAddress": formatted_address, "roads": [], "crosses": [], "pois": []}
+        result_json = {'e': 1, 'm': '失败', 'd': {}}
+        while tryTimes > 0:
 
-        data = {
-            "sfymqjczrj": "0",
-            "sfyrjjh": "0",
-            "nrjrq": "0",
-            "sfqrxxss": "1",
-            "sfqtyyqjwdg": "0",
-            "sffrqjwdg": "0",
-            "zgfx14rfh": "0",
-            "sfyxjzxgym": "1",
-            "sfbyjzrq": "5",
-            "jzxgymqk": "2",
-            "campus": campus,
-            "ismoved": "0",
-            "tw": "0",
-            "sfcxtz": "0",
-            "sfjcbh": "0",
-            "sfcxzysx": "0",
-            "sfyyjc": "0",
-            "jcjgqr": "0",
-            'address': formatted_address,
-            'geo_api_info': geo_api_info_dict,
-            'area': "{} {} {}".format(address_component.get("province"), address_component.get("city"),
-                                      address_component.get("district")),
-            'province': address_component.get("province"),
-            'city': address_component.get("city"),
-            "sfzx": "1",
-            "sfjcwhry": "0",
-            "sfjchbry": "0",
-            "sfcyglq": "0",
-            "sftjhb": "0",
-            "sftjwh": "0",
-            "sfyqjzgc": "0",
-            "sfsqhzjkk": "1",
-            "sqhzjkkys": "1",
-            # 日期
-            'date': get_date(),
-            'created': round(time.time()),
-            "szsqsfybl": "0",
-            "sfygtjzzfj": "0",
-            "uid": new_uid,
-            "id": new_id,
-            "verifyCode": cope_with_captcha(self.sess),
-            "dbfb7190a31b5f8cd4a85f5a4975b89b": "1651977968",
-            "1a7c5b2e52854a2480947880eabe1fe1": "a3fefb4a32d22d9a3ff5827ac60bb1b0"
-        }
-        response = self.sess.post('https://healthreport.zju.edu.cn/ncov/wap/default/save', data=data,
-                                  headers=self.headers)
-        return response.json()
+            # 获得id和uid参数-->新版接口里不需要这两个参数了
+            res = self.sess.get(self.BASE_URL, headers=self.headers)
+            html = res.content.decode()
+            new_info_tmp: dict = json.loads(re.findall(r'var def ?= ?(\{.*?\});', html, re.S)[0])
+            # new_info_tmp = json.loads(re.findall(r'def = (\{.*?\});', html, re.S)[0])
+            # print(new_info_tmp)
+            new_id = new_info_tmp.setdefault("id", "")
+            new_uid = new_info_tmp.setdefault("uid", "")
+            # 拼凑geo信息
+            lng, lat = address_component.get("streetNumber").get("location").split(",")
+            geo_api_info_dict = {"type": "complete", "info": "SUCCESS", "status": 1,
+                                 "position": {"Q": lat, "R": lng, "lng": lng, "lat": lat},
+                                 "message": "Get ipLocation success.Get address success.", "location_type": "ip",
+                                 "accuracy": 40, "isConverted": "true", "addressComponent": address_component,
+                                 "formattedAddress": formatted_address, "roads": [], "crosses": [], "pois": []}
+
+            data = {
+                "sfymqjczrj": "0",
+                "sfyrjjh": "0",
+                "nrjrq": "0",
+                "sfqrxxss": "1",
+                "sfqtyyqjwdg": "0",
+                "sffrqjwdg": "0",
+                "zgfx14rfh": "0",
+                "sfyxjzxgym": "1",
+                "sfbyjzrq": "5",
+                "jzxgymqk": "2",
+                "campus": campus,
+                "ismoved": "0",
+                "tw": "0",
+                "sfcxtz": "0",
+                "sfjcbh": "0",
+                "sfcxzysx": "0",
+                "sfyyjc": "0",
+                "jcjgqr": "0",
+                'address': formatted_address,
+                'geo_api_info': geo_api_info_dict,
+                'area': "{} {} {}".format(address_component.get("province"), address_component.get("city"),
+                                          address_component.get("district")),
+                'province': address_component.get("province"),
+                'city': address_component.get("city"),
+                "sfzx": "1",
+                "sfjcwhry": "0",
+                "sfjchbry": "0",
+                "sfcyglq": "0",
+                "sftjhb": "0",
+                "sftjwh": "0",
+                "sfyqjzgc": "0",
+                "sfsqhzjkk": "1",
+                "sqhzjkkys": "1",
+                # 日期
+                'date': get_date(),
+                'created': round(time.time()),
+                "szsqsfybl": "0",
+                "sfygtjzzfj": "0",
+                "uid": new_uid,
+                "id": new_id,
+                "verifyCode": cope_with_captcha(self.sess),
+                "dbfb7190a31b5f8cd4a85f5a4975b89b": "1651977968",
+                "1a7c5b2e52854a2480947880eabe1fe1": "a3fefb4a32d22d9a3ff5827ac60bb1b0"
+            }
+            response = self.sess.post('https://healthreport.zju.edu.cn/ncov/wap/default/save', data=data,
+                                      headers=self.headers)
+            result_json.update(response.json())
+            if result_json.get("e") == 0:
+                break
+            else:
+                # 如果填写过了, 则不再重试
+                if "已经填报了" in result_json.get("m"):
+                    break
+                tryTimes -= 1
+        return result_json
 
     def run(self, lng, lat, campus, delay_run=False):
         """

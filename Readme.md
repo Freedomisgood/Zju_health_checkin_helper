@@ -40,7 +40,7 @@
      - 工程师学院
      - 杭州国际科创中心
 2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
-3. GithubAction: Fork仓库后, 根据要求参数填写secrets, 提示在下面↓。
+3. GithubAction: Fork仓库后, 根据要求参数填写secrets(填写提示在下面↓), 然后在`Actions`中手动触发一次`flow`。
 
 注: 如果使用了`pipenv`, 定时任务为: `30 10 * * * bash /home/mrli/dscripts/app/zju/start.sh` 
 ```bash
