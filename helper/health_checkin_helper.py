@@ -96,7 +96,6 @@ class HealthCheckInHelper(ZJULogin):
 
         result_json = {'e': 1, 'm': '失败', 'd': {}}
         while tryTimes > 0:
-
             # 获得id和uid参数-->新版接口里不需要这两个参数了
             res = self.sess.get(self.BASE_URL, headers=self.headers)
             html = res.content.decode()
@@ -168,6 +167,7 @@ class HealthCheckInHelper(ZJULogin):
                 if "已经填报了" in result_json.get("m"):
                     break
                 tryTimes -= 1
+                time.sleep(30)
         return result_json
 
     def run(self, lng, lat, campus, delay_run=False):
@@ -197,9 +197,3 @@ class HealthCheckInHelper(ZJULogin):
             p.push("打卡成功, 返回消息为: {}".format(res), title="打卡成功")
         except Exception as e:  # 失败消息推送
             p.push("打卡失败, 原因为: {}".format(e), title="打卡失败")
-
-
-if __name__ == '__main__':
-    args = _init_parser()
-    s = HealthCheckInHelper(args.account, args.password)
-    s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False)

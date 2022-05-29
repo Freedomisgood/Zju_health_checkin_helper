@@ -8,7 +8,7 @@ on:
     types: [ started ]
   schedule:
     # 每天运行的时间, 这边会有8小时的时差, 北京时间比Github所使用时区快8个小时, 所以要设慢8个小时
-    - cron: 45 18 * * *
+    - cron: 45 6 * * *
 
 jobs:
   healthcheck:
