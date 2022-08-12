@@ -21,7 +21,8 @@ def _init_parser():
     parser.add_argument("-p", "--password", type=str, required=True, help="统一认证平台密码")
     parser.add_argument("-lng", "--longitude", type=str, required=True, help="定位经度")
     parser.add_argument("-lat", "--latitude", type=str, required=True, help="定位纬度")
-    parser.add_argument("-c", "--campus", type=str, required=True, help="校区")
+    parser.add_argument("-c", "--campus", type=str, required=False, help="所在校区, 比如宁波校区。如果不在校内, 则不填")
+
     return parser.parse_args()
 
 

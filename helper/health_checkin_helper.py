@@ -6,7 +6,7 @@ import json5 as json
 import requests
 from helper.exceptions import LoginError
 from helper.ext import p
-from helper.utils import take_out_json, get_date, cope_with_captcha
+from helper.utils import take_out_json, get_date
 
 
 class ZJULogin(object):
@@ -85,6 +85,125 @@ class HealthCheckInHelper(ZJULogin):
         response = self.sess.get('https://restapi.amap.com/v3/geocode/regeo', headers=self.headers, params=params, )
         return take_out_json(response.text)
 
+    def generate_form_param(self, address_component, formatted_address, campus):
+        # 获得id和uid参数-->新版接口里不需要这两个参数了
+        res = self.sess.get(self.BASE_URL, headers=self.headers)
+        html = res.content.decode()
+        new_info_tmp: dict = json.loads(re.findall(r'var def ?= ?(\{.*?\});', html, re.S)[0])
+        # new_info_tmp = json.loads(re.findall(r'def = (\{.*?\});', html, re.S)[0])
+        # print(new_info_tmp)
+        new_id = new_info_tmp.setdefault("id", "")
+        new_uid = new_info_tmp.setdefault("uid", "")
+        # 拼凑geo信息
+        lng, lat = address_component.get("streetNumber").get("location").split(",")
+        geo_api_info_dict = {"type": "complete", "info": "SUCCESS", "status": 1,
+                             "position": {"Q": lat, "R": lng, "lng": lng, "lat": lat},
+                             "message": "Get ipLocation success.Get address success.", "location_type": "ip",
+                             "accuracy": 40, "isConverted": "true", "addressComponent": address_component,
+                             "formattedAddress": formatted_address, "roads": [], "crosses": [], "pois": []}
+        # 2022年8月12日: 当选择不在校时有另外一套参数
+        data = {
+            "sfymqjczrj": "0",
+            "sfyrjjh": "0",
+            "nrjrq": "0",
+            "sfqrxxss": "1",
+            "sfqtyyqjwdg": "0",
+            "sffrqjwdg": "0",
+            "zgfx14rfh": "0",
+            "sfyxjzxgym": "1",
+            "sfbyjzrq": "5",
+            "jzxgymqk": "2",
+            "ismoved": "0",
+            "tw": "0",
+            "sfcxtz": "0",
+            "sfjcbh": "0",
+            "sfcxzysx": "0",
+            "sfyyjc": "0",
+            "jcjgqr": "0",
+            "sfzx": "1",
+            "sfjcwhry": "0",
+            "sfjchbry": "0",
+            "sfcyglq": "0",
+            "sftjhb": "0",
+            "sftjwh": "0",
+            "sfyqjzgc": "0",
+            "sfsqhzjkk": "1",
+            "sqhzjkkys": "1",
+            "szsqsfybl": "0",
+            "sfygtjzzfj": "0",
+            "dbfb7190a31b5f8cd4a85f5a4975b89b": "1651977968",
+            "1a7c5b2e52854a2480947880eabe1fe1": "a3fefb4a32d22d9a3ff5827ac60bb1b0",
+            # 2022年8月12日新增的变量
+            'zjdfgj': '',
+            'cfgj': '',
+            'tjgj': '',
+            'rjka': '',
+            'jnmddsheng': '',
+            'jnmddshi': '',
+            'jnmddqu': '',
+            'jnmddxiangxi': '',
+            'rjjtfs': '',
+            'rjjtfs1': '',
+            'rjjtgjbc': '',
+            'jnjtfs': '',
+            'jnjtfs1': '',
+            'jnjtgjbc': '',
+            'sfhsjc': '',
+            'zgfx14rfhdd': '',
+            'jcjg': '',
+            'remark': '',
+            'qksm': '',
+            'gllx': '',
+            'glksrq': '',
+            'jcbhlx': '',
+            'jcbhrq': '',
+            'fxyy': '',
+            'bztcyy': '',
+            'fjsj': '0',
+            'jrsfqzys': '',
+            'jrsfqzfy': '',
+            'jrdqjcqk': '',
+            'sfjcqz': '',
+            'jcqzrq': '',
+            'jcwhryfs': '',
+            'jchbryfs': '',
+            'xjzd': '',
+            'szgj': '',
+            'sfsfbh': '0',
+            'jhfjrq': '',
+            'jhfjjtgj': '',
+            'jhfjhbcc': '',
+            'jhfjsftjwh': '0',
+            'jhfjsftjhb': '0',
+            'gtjzzfjsj': '',
+            'gwszgz': '',
+            'gwszgzcs': '',
+            'internship': '1',
+            'gwszdd': '',
+            'szgjcs': '',
+            'zgfx14rfhsj': '',
+            # 占位符
+            "verifyCode": "",
+            "uid": new_uid,
+            "id": new_id,
+            'date': get_date(),
+            'created': round(time.time()),
+            'address': formatted_address,
+            'geo_api_info': geo_api_info_dict,
+            'area': "{} {} {}".format(address_component.get("province"), address_component.get("city"),
+                                      address_component.get("district")),
+            'province': address_component.get("province"),
+            'city': address_component.get("city"),
+            "campus": campus,
+        }
+        # 如果不在校内的话, 下述参数是不一样的
+        if not campus:
+            data["sqhzjkkys"] = "1"
+            data["campus"] = ""
+            data["tw"] = "1"
+            data["sfzx"] = "0"
+        return data
+
     def take_in(self, geo_info: dict, campus: str, tryTimes: int = 3):
         """
         打卡执行函数
@@ -96,67 +215,10 @@ class HealthCheckInHelper(ZJULogin):
 
         result_json = {'e': 1, 'm': '失败', 'd': {}}
         while tryTimes > 0:
-            # 获得id和uid参数-->新版接口里不需要这两个参数了
-            res = self.sess.get(self.BASE_URL, headers=self.headers)
-            html = res.content.decode()
-            new_info_tmp: dict = json.loads(re.findall(r'var def ?= ?(\{.*?\});', html, re.S)[0])
-            # new_info_tmp = json.loads(re.findall(r'def = (\{.*?\});', html, re.S)[0])
-            # print(new_info_tmp)
-            new_id = new_info_tmp.setdefault("id", "")
-            new_uid = new_info_tmp.setdefault("uid", "")
-            # 拼凑geo信息
-            lng, lat = address_component.get("streetNumber").get("location").split(",")
-            geo_api_info_dict = {"type": "complete", "info": "SUCCESS", "status": 1,
-                                 "position": {"Q": lat, "R": lng, "lng": lng, "lat": lat},
-                                 "message": "Get ipLocation success.Get address success.", "location_type": "ip",
-                                 "accuracy": 40, "isConverted": "true", "addressComponent": address_component,
-                                 "formattedAddress": formatted_address, "roads": [], "crosses": [], "pois": []}
-
-            data = {
-                "sfymqjczrj": "0",
-                "sfyrjjh": "0",
-                "nrjrq": "0",
-                "sfqrxxss": "1",
-                "sfqtyyqjwdg": "0",
-                "sffrqjwdg": "0",
-                "zgfx14rfh": "0",
-                "sfyxjzxgym": "1",
-                "sfbyjzrq": "5",
-                "jzxgymqk": "2",
-                "campus": campus,
-                "ismoved": "0",
-                "tw": "0",
-                "sfcxtz": "0",
-                "sfjcbh": "0",
-                "sfcxzysx": "0",
-                "sfyyjc": "0",
-                "jcjgqr": "0",
-                'address': formatted_address,
-                'geo_api_info': geo_api_info_dict,
-                'area': "{} {} {}".format(address_component.get("province"), address_component.get("city"),
-                                          address_component.get("district")),
-                'province': address_component.get("province"),
-                'city': address_component.get("city"),
-                "sfzx": "1",
-                "sfjcwhry": "0",
-                "sfjchbry": "0",
-                "sfcyglq": "0",
-                "sftjhb": "0",
-                "sftjwh": "0",
-                "sfyqjzgc": "0",
-                "sfsqhzjkk": "1",
-                "sqhzjkkys": "1",
-                # 日期
-                'date': get_date(),
-                'created': round(time.time()),
-                "szsqsfybl": "0",
-                "sfygtjzzfj": "0",
-                "uid": new_uid,
-                "id": new_id,
-                "verifyCode": cope_with_captcha(self.sess),
-                "dbfb7190a31b5f8cd4a85f5a4975b89b": "1651977968",
-                "1a7c5b2e52854a2480947880eabe1fe1": "a3fefb4a32d22d9a3ff5827ac60bb1b0"
-            }
+            # 抽取方法
+            data = self.generate_form_param(address_component=address_component,
+                                            formatted_address=formatted_address,
+                                            campus=campus)
             response = self.sess.post('https://healthreport.zju.edu.cn/ncov/wap/default/save', data=data,
                                       headers=self.headers)
             result_json.update(response.json())

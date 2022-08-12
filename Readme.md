@@ -1,9 +1,9 @@
 # Health_Checkin_Helper
 > 3 < Python < 3.9
 > 
-> 健康打卡助手: 
+> 健康打卡助手- 两种运行方案: 
 > - 将脚本部署于服务器上后，使用cron启动定时任务，每日打卡。
-> - Github Action
+> - Github Action: 采用Github提供的服务器进行定时运行脚本, 设置方式见下文
 > 
 > migrate from: https://github.com/Freedomisgood/When_Coding_in_ZJU/tree/main/Health_Checkin, 考虑到不少同学fork仓库是只是为了打卡代码, 因此
 > 决定还是将其抽离出来，作为一个单独的仓库。
@@ -39,7 +39,7 @@
      - 宁波校区
      - 工程师学院
      - 杭州国际科创中心
-   - 经纬度参数值，可以通过[经纬度查询](https://map.bmcx.com/)网站来获得
+   - 经纬度参数值，可以通过 [经纬度查询](https://map.bmcx.com/) 网站来获得
 2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
 3. GithubAction: Fork仓库后, 根据要求参数填写secrets(填写提示在下面↓), 然后在`Actions`中手动触发一次`flow`。
 
@@ -79,6 +79,7 @@ pushplus_token =
 
 
 ## 更新日志：
+- 2022年8月13日: 暑假版本变化: 新增是否在校、实习选项
 - 2022年5月10日: 迁移仓库, 增加Github Action, 丰富pusher推送功能
 - 2022年5月8日: 增加验证码识别, 使用ddddocr库完成, 由于onnruntime需要<Py3.9, 所以现在只支持Python3-3.9
 - 2021年9月19日: 执行run中增加随机数延时，以实现每次打卡时间不同。
@@ -93,7 +94,7 @@ pushplus_token =
 - PASSWORD: 统一认证账号密码(*必填)
 - LONGITUDE: 经度(*必填)
 - LATITUDE: 纬度(*必填)
-- CAMPUS: 校区(*必填), 具体选项见上文
+- CAMPUS: 校区(可选): 不填时采用"不在在校"选项
 
 **GithubAction secrets参数填写教程图**:
 

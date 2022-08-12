@@ -6,11 +6,10 @@ import datetime
 import json
 import re
 
-from helper.ext import ocr
 
-
+@DeprecationWarning
 def cope_with_captcha(sess):
-    """识别验证码"""
+    """识别验证码, 目前版本中不需要ocr了"""
     response = sess.get('https://healthreport.zju.edu.cn/ncov/wap/default/code')
     img_bytes = response.content
     # with open("captcha.png", "wb") as f:
