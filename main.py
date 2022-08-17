@@ -29,4 +29,8 @@ def _init_parser():
 if __name__ == '__main__':
     args = _init_parser()
     s = HealthCheckInHelper(args.account, args.password)
+    if args.campus:
+        print(f"选择校内情况, 校区为: {args.campus}")
+    else:
+        print("选择校外情况")
     s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False)

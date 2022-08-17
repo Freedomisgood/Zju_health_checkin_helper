@@ -198,9 +198,7 @@ class HealthCheckInHelper(ZJULogin):
         }
         # 如果不在校内的话, 下述参数是不一样的
         if not campus:
-            data["sqhzjkkys"] = "1"
             data["campus"] = ""
-            data["tw"] = "1"
             data["sfzx"] = "0"
         return data
 

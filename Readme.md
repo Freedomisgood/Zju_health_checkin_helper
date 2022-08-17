@@ -79,6 +79,7 @@ pushplus_token =
 
 
 ## 更新日志：
+- 2022年8月17日: 修复[issue#1](https://github.com/Freedomisgood/Zju_health_checkin_helper/issues/1): 校外参数错误
 - 2022年8月13日: 暑假版本变化: 新增是否在校、实习选项
 - 2022年5月10日: 迁移仓库, 增加Github Action, 丰富pusher推送功能
 - 2022年5月8日: 增加验证码识别, 使用ddddocr库完成, 由于onnruntime需要<Py3.9, 所以现在只支持Python3-3.9
