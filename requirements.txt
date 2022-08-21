@@ -1,7 +1,5 @@
 certifi==2021.10.8
 idna==3.3
-numpy==1.19.5
-Pillow==8.4.0
 requests==2.27.1
 urllib3==1.26.9
 json5

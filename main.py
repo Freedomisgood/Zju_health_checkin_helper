@@ -21,7 +21,7 @@ def _init_parser():
     parser.add_argument("-p", "--password", type=str, required=True, help="统一认证平台密码")
     parser.add_argument("-lng", "--longitude", type=str, required=True, help="定位经度")
     parser.add_argument("-lat", "--latitude", type=str, required=True, help="定位纬度")
-    parser.add_argument("-c", "--campus", type=str, required=False, help="所在校区, 比如宁波校区。如果不在校内, 则不填")
+    parser.add_argument("-c", "--campus", type=str, required=True, help="所在校区, 比如宁波校区。如果不在校内, 则填NO")
 
     return parser.parse_args()
 
@@ -29,8 +29,9 @@ def _init_parser():
 if __name__ == '__main__':
     args = _init_parser()
     s = HealthCheckInHelper(args.account, args.password)
-    if args.campus:
+    if args.campus != "NO":
         print(f"选择校内情况, 校区为: {args.campus}")
+        s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False)
     else:
         print("选择校外情况")
-    s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False)
+        s.run(lng=args.longitude, lat=args.latitude, campus="", delay_run=False)

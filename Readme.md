@@ -39,6 +39,8 @@
      - 宁波校区
      - 工程师学院
      - 杭州国际科创中心
+   
+   ▲注: 如果选择"校外", 则运行`python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c NO`, 即CAMPUS参数填写NO
    - 经纬度参数值，可以通过 [经纬度查询](https://map.bmcx.com/) 网站来获得
 2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
 3. GithubAction: Fork仓库后, 根据要求参数填写secrets(填写提示在下面↓), 然后在`Actions`中手动触发一次`flow`。

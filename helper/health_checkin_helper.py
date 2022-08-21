@@ -227,6 +227,7 @@ class HealthCheckInHelper(ZJULogin):
                 if "已经填报了" in result_json.get("m"):
                     break
                 tryTimes -= 1
+                # 设置30s重试
                 time.sleep(30)
         return result_json
 
