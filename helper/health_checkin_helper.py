@@ -1,6 +1,7 @@
 import random
 import re
 import time
+import requests
 
 import json5 as json
 import requests
@@ -231,7 +232,7 @@ class HealthCheckInHelper(ZJULogin):
                 time.sleep(30)
         return result_json
 
-    def run(self, lng, lat, campus, delay_run=False):
+    def run(self, lng, lat, campus, delay_run=False, sendkey=sendkey):
         """
         Args:
             'lng': '121.63529', 'lat': '29.89154'
@@ -252,9 +253,18 @@ class HealthCheckInHelper(ZJULogin):
         location = {'info': 'LOCATE_SUCCESS', 'status': 1, 'lng': lng, 'lat': lat}
         geo_info = self.get_geo_info(location)
         # print(geo_info)
+        URL = 'https://sctapi.ftqq.com/'+ str(sendkey) + '.send'
         try:
             res = self.take_in(geo_info, campus=campus)
             print(res)
             p.push("打卡成功, 返回消息为: {}".format(res), title="打卡成功")
+            push_content = { 'title' : 'Check-in Successful',
+                            'desp' : 'username:' + str(self.username) + '\n' + 'campus:' + str(campus) + '\n' + 'lng:' + str(lng) + '\n' + 'lat:' + str(lat)}
+            
+            requests.post(url=URL, data=push_content)
+            
         except Exception as e:  # 失败消息推送
             p.push("打卡失败, 原因为: {}".format(e), title="打卡失败")
+            push_content = { 'title' : 'Check-in Failed',
+                            'desp' : 'username:' + str(self.username) + '\n' + 'campus:' + str(campus) + '\n' + 'Failed reason:' + str(e)}
+            requests.post(url=URL, data=push_content)
