@@ -52,5 +52,6 @@ jobs:
           campus: ${{ secrets.CAMPUS }}
           longitude: ${{ secrets.LONGITUDE }}
           latitude: ${{ secrets.LATITUDE }}
+          sendkey: ${{secrets.SENDKEY }}
         # 如果嫌secrets填写麻烦, 下边的run可以改成 python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
-        run: python3 main.py -a ${{ secrets.account }} -p ${{ secrets.password }} -lng ${{ secrets.longitude }} -lat ${{ secrets.latitude }} -c ${{ secrets.campus }}
+        run: python3 main.py -a ${{ secrets.account }} -p ${{ secrets.password }} -lng ${{ secrets.longitude }} -lat ${{ secrets.latitude }} -c ${{ secrets.campus }} -s ${{ secrets.sendkey}}
