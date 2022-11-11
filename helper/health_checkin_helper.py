@@ -232,7 +232,7 @@ class HealthCheckInHelper(ZJULogin):
                 time.sleep(30)
         return result_json
 
-    def run(self, lng, lat, campus, delay_run=False, sendkey=sendkey):
+    def run(self, lng, lat, campus, delay_run=False, sendkey):
         """
         Args:
             'lng': '121.63529', 'lat': '29.89154'
