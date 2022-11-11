@@ -22,6 +22,7 @@ def _init_parser():
     parser.add_argument("-lng", "--longitude", type=str, required=True, help="定位经度")
     parser.add_argument("-lat", "--latitude", type=str, required=True, help="定位纬度")
     parser.add_argument("-c", "--campus", type=str, required=True, help="所在校区, 比如宁波校区。如果不在校内, 则填NO")
+    parser.add_argument("-s", "--sendkey", type=str, required=True, help="推送sendkey的sendkey")
 
     return parser.parse_args()
 
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     s = HealthCheckInHelper(args.account, args.password)
     if args.campus != "NO":
         print(f"选择校内情况, 校区为: {args.campus}")
-        s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False)
+        s.run(lng=args.longitude, lat=args.latitude, campus=args.campus, delay_run=False, sendkey=args.sendkey)
     else:
         print("选择校外情况")
-        s.run(lng=args.longitude, lat=args.latitude, campus="", delay_run=False)
+        s.run(lng=args.longitude, lat=args.latitude, campus="", delay_run=False, sendkey=args.sendkey)
