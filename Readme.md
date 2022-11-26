@@ -19,8 +19,8 @@
 
 - ~~ZJU_Clock_In~~(×, 本仓库不再维护)
 - ★ZJU_Health_Checkin_Helper
-  - cst: 是IP定位写死宁波浙软的版本
-  - all: 开放给所有校区同学使用的, 参数可自由填写
+  - ~~cst: 是IP定位写死宁波浙软的版本~~
+  - ~~all: 开放给所有校区同学使用的, 参数可自由填写~~
 
 区别于：[ZJU_Clock_In](https://github.com/lgaheilongzi/ZJU-Clock-In) 的地方是，ZJU_Clock_In采用的是利用缓存数据提交，如果没有缓存数据则需要手动先打一次卡；而Health_Checkin_Helper**没有这个限制**，直接可以打卡，并且可以**设置打卡位置**。
 
@@ -43,7 +43,8 @@
    ▲注: 如果选择"校外", 则运行`python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c NO`, 即CAMPUS参数填写NO
    - 经纬度参数值，可以通过 [经纬度查询](https://map.bmcx.com/) 网站来获得
 2. 将脚本放在服务器上cron定时执行: `05 12 * * * python /home/mrli/dscripts/app/zju/main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区`
-3. GithubAction: Fork仓库后, 根据要求参数填写secrets(填写提示在下面↓), 然后在`Actions`中手动触发一次`flow`。
+3. GithubAction: Fork仓库后, 根据要求参数填写secrets(填写提示在下面↓), 然后在仓库的`Actions`标签页中手动点击`Enable workflow`来启动触发workflow设置。
+   - 打卡时间由`.github/workflows/run_check.yml`文件中的`cron: 45 0 * * *`配置, 需要修改的可`fork`后自行修改
 
 注: 如果使用了`pipenv`, 定时任务为: `30 10 * * * bash /home/mrli/dscripts/app/zju/start.sh` 
 ```bash
@@ -55,7 +56,7 @@ pipenv run python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
 ```
 
 ## 推送功能:
-> 需要修改`push_config.ini`内容, 对于Github Action没作支持(如果要使用请fork后修改`push_config.ini`再Start Action)
+> 需要修改`push_config.ini`内容, 对于Github Action没作参数支持(如果要使用, 请fork后修改`push_config.ini`再Start Action)
 >
 > 如果没设置`pusher_type`则不推送
 > 
@@ -104,5 +105,7 @@ pushplus_token =
 
 **GithubAction secrets参数填写教程图**:
 
+- 必须参数填写说明: 
 ![action_secret](./assets/action_secret.jpg)
-
+- 仓库同步操作教程
+![sync_update](assets/sync_update.png)
