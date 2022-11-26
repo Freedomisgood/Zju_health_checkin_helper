@@ -55,9 +55,11 @@ pipenv run python main.py -a * -p * -lng 121.63529 -lat 29.89154 -c 宁波校区
 ```
 
 ## 推送功能:
-> 需要修改`push_config.ini`内容, 对于Github Action没作支持
+> 需要修改`push_config.ini`内容, 对于Github Action没作支持(如果要使用请fork后修改`push_config.ini`再Start Action)
 >
 > 如果没设置`pusher_type`则不推送
+> 
+> 注: **如果要PR, 请关注下`pusher.py`文件的内容**
 
 ```ini
 [pusher]
@@ -81,6 +83,7 @@ pushplus_token =
 
 
 ## 更新日志：
+- 2022年11月24日: 完善抓包参数对比工具 + 修改抓取新参数
 - 2022年8月17日: 修复[issue#1](https://github.com/Freedomisgood/Zju_health_checkin_helper/issues/1): 校外参数错误
 - 2022年8月13日: 暑假版本变化: 新增是否在校、实习选项
 - 2022年5月10日: 迁移仓库, 增加Github Action, 丰富pusher推送功能

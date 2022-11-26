@@ -14,8 +14,15 @@ def cope_with_captcha(sess):
     img_bytes = response.content
     # with open("captcha.png", "wb") as f:
     #     f.write(img_bytes)
-    res = ocr.classification(img_bytes)
-    return res.upper()
+    try:
+        from ddddocr import DdddOcr
+    except ImportError:
+        pass
+    else:
+        # ocr = ddddocr.DdddOcr(det=False, ocr=True)
+        res = ocr.classification(img_bytes)
+        return res.upper()
+    return "ocr is not installed!"
 
 
 def get_day(delta=0):

@@ -1,0 +1,322 @@
+import requests
+
+cookies = {
+    'Hm_lpvt_48b682d4885d22a90111e46b972e3268': '1669259900',
+    'Hm_lvt_48b682d4885d22a90111e46b972e3268': '1669259900',
+    '_pc0': '9wE8G%2Bo82PYhmhy5BhNMq23H43jKR%2FYL2nm9iUeXm%2F0%3D',
+    '_pf0': 'lBpePTKvIRrw35FoIecYkY8z922%2Fuj%2B4bo9KI2J12rY%3D',
+    'iPlanetDirectoryPro': 'k5M5ka4IoiQeq%2FKm7q3384RBcAtCaYmYAWrgg%2FL%2B%2BuKaK8fGYUTQuJoRWwNBpNUo1OTWzVzl2Gm%2BDlFHtP7HSTFMYo13QYTuR%2FIi92e24%2FVQLm7M7Zkv4uUP0L2dkNFev%2BgjiOyxE2saV7Im5CYo0GHHa2GVwFlQ6yjzbWyh0yirx5wXMgMplgo6wWTlWMDY%2BZMf%2Bb5jAqhSCQZQyIsEyq9W8YBcWQTh4FB%2F%2Bg5W9257%2FnBMIASq%2FNsb%2BPpWBCzOVxrcXQRx9l12rdw3kpAJI4NK2GorwjRv9BOnCfs9oUqnkC1Y51i7S%2FswgysfI%2FkQYBwX1k491qL%2FubKFS1muHIM4x5NlYHWoeiLkg7Djvvo%3D',
+    'eai-sess': '0im8rttludbebqkacipah7o0n4',
+    '_pv0': 'eFMEU7EBeYEST2oJrVD5n4u8sGiJlEUWbK81DHXV5swyFTgdFIkAgY47VpCwAZiQhltd%2FIMS93wyMLEBfbuROpTnJZECczaWgHSq2GrBNPv7iRvg8s4KV29%2FEPsbb2JN7IqN%2Fi40Klj6g9lMDFTyHceM6uAZ1b8Ey%2Fbi4TBJDhZts7uvlVmwnidjIweRvCVW9KFmVuS%2FVRh9bQAO0eLZfHMHsA6hoSageDgli6dx2nHx6zoPUKBPTvY%2BuwEnd3h2o1Rctn3KZG73xPHwR2knFFw6%2FXEcQrC2TTwLVS1LbE%2F62KBFoLNBQYYa6ZmSHSRj3oYZVt4uaUi7FpN25X7e7ds09UukE1rvFziYKhyuAPXqWXoHrBcnOkPKwhFIOHH78%2BrR3EFUljBjS3forMS7dVRm3FXcYeiF4gWCQsVazE0%3D',
+    '_csrf': 'S8mwplVi9KWoF2WQ0TlCeH2VHBkpteH7fJhcOt5WRaw%3D',
+    'UUkey': '6495adef0aa1e49ab1f331e2afba8732',
+}
+
+headers = {
+    'Host': 'healthreport.zju.edu.cn',
+    # Requests sorts cookies= alphabetically
+    # 'Cookie': 'Hm_lpvt_48b682d4885d22a90111e46b972e3268=1669259900; Hm_lvt_48b682d4885d22a90111e46b972e3268=1669259900; _pc0=9wE8G%2Bo82PYhmhy5BhNMq23H43jKR%2FYL2nm9iUeXm%2F0%3D; _pf0=lBpePTKvIRrw35FoIecYkY8z922%2Fuj%2B4bo9KI2J12rY%3D; iPlanetDirectoryPro=k5M5ka4IoiQeq%2FKm7q3384RBcAtCaYmYAWrgg%2FL%2B%2BuKaK8fGYUTQuJoRWwNBpNUo1OTWzVzl2Gm%2BDlFHtP7HSTFMYo13QYTuR%2FIi92e24%2FVQLm7M7Zkv4uUP0L2dkNFev%2BgjiOyxE2saV7Im5CYo0GHHa2GVwFlQ6yjzbWyh0yirx5wXMgMplgo6wWTlWMDY%2BZMf%2Bb5jAqhSCQZQyIsEyq9W8YBcWQTh4FB%2F%2Bg5W9257%2FnBMIASq%2FNsb%2BPpWBCzOVxrcXQRx9l12rdw3kpAJI4NK2GorwjRv9BOnCfs9oUqnkC1Y51i7S%2FswgysfI%2FkQYBwX1k491qL%2FubKFS1muHIM4x5NlYHWoeiLkg7Djvvo%3D; eai-sess=0im8rttludbebqkacipah7o0n4; _pv0=eFMEU7EBeYEST2oJrVD5n4u8sGiJlEUWbK81DHXV5swyFTgdFIkAgY47VpCwAZiQhltd%2FIMS93wyMLEBfbuROpTnJZECczaWgHSq2GrBNPv7iRvg8s4KV29%2FEPsbb2JN7IqN%2Fi40Klj6g9lMDFTyHceM6uAZ1b8Ey%2Fbi4TBJDhZts7uvlVmwnidjIweRvCVW9KFmVuS%2FVRh9bQAO0eLZfHMHsA6hoSageDgli6dx2nHx6zoPUKBPTvY%2BuwEnd3h2o1Rctn3KZG73xPHwR2knFFw6%2FXEcQrC2TTwLVS1LbE%2F62KBFoLNBQYYa6ZmSHSRj3oYZVt4uaUi7FpN25X7e7ds09UukE1rvFziYKhyuAPXqWXoHrBcnOkPKwhFIOHH78%2BrR3EFUljBjS3forMS7dVRm3FXcYeiF4gWCQsVazE0%3D; _csrf=S8mwplVi9KWoF2WQ0TlCeH2VHBkpteH7fJhcOt5WRaw%3D; UUkey=6495adef0aa1e49ab1f331e2afba8732',
+    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'accept': 'application/json, text/javascript, */*; q=0.01',
+    'x-requested-with': 'XMLHttpRequest',
+    'accept-language': 'zh-CN,zh-Hans;q=0.9',
+    'origin': 'https://healthreport.zju.edu.cn',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15',
+    'referer': 'https://healthreport.zju.edu.cn/ncov/wap/default/index',
+}
+
+data = {
+    'sfymqjczrj': '0',
+    'zjdfgj': '',
+    'sfyrjjh': '0',
+    'cfgj': '',
+    'tjgj': '',
+    'nrjrq': '0',
+    'rjka': '',
+    'jnmddsheng': '',
+    'jnmddshi': '',
+    'jnmddqu': '',
+    'jnmddxiangxi': '',
+    'rjjtfs': '',
+    'rjjtfs1': '',
+    'rjjtgjbc': '',
+    'jnjtfs': '',
+    'jnjtfs1': '',
+    'jnjtgjbc': '',
+    'sfqrxxss': '1',
+    'sfqtyyqjwdg': '',
+    'sffrqjwdg': '',
+    'sfhsjc': '',
+    'zgfx14rfh': '0',
+    'zgfx14rfhdd': '',
+    'sfyxjzxgym': '',
+    'sfbyjzrq': '0',
+    'jzxgymqk': '0',
+    'campus': '宁波校区',
+    'ismoved': '0',
+    'tw': '0',
+    'sfcxtz': '0',
+    'sfjcbh': '0',
+    'sfcxzysx': '0',
+    'qksm': '',
+    'sfyyjc': '0',
+    'jcjgqr': '0',
+    'remark': '',
+    'address': '浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼',
+    'geo_api_info': '{"type":"complete","position":{"Q":29.890027669271,"R":121.64014078776097,"lng":121.640141,"lat":29.890028},"location_type":"html5","message":"Get ipLocation failed.Get geolocation success.Convert Success.Get address success.","accuracy":35,"isConverted":true,"status":1,"addressComponent":{"citycode":"0574","adcode":"330212","businessAreas":[{"name":"梅墟","id":"330212","location":{"Q":29.890393,"R":121.65525400000001,"lng":121.655254,"lat":29.890393}}],"neighborhoodType":"","neighborhood":"","building":"","buildingType":"","street":"江南路","streetNumber":"1715号","country":"中国","province":"浙江省","city":"宁波市","district":"鄞州区","towncode":"330212018000","township":"聚贤街道"},"formattedAddress":"浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}',
+    'area': '浙江省 宁波市 鄞州区',
+    'province': '浙江省',
+    'city': '宁波市',
+    'sfzx': '1',
+    'sfjcwhry': '0',
+    'sfjchbry': '0',
+    'sfcyglq': '0',
+    'gllx': '',
+    'glksrq': '',
+    'jcbhlx': '',
+    'jcbhrq': '',
+    'bztcyy': '',
+    'sftjhb': '0',
+    'sftjwh': '0',
+    'sfjcqz': '0',
+    'jcqzrq': '',
+    'jrsfqzys': '0',
+    'jrsfqzfy': '0',
+    'sfyqjzgc': '0',
+    'sfsqhzjkk': '',
+    'sqhzjkkys': '1',
+    'gwszgzcs': '',
+    'szgj': '',
+    'internship': '2',
+    'szgjcs': '',
+    'verifyCode': '',
+    '7c19465cad12f1aad975c817b0ef3842': '1669259897',
+    '8f28bca202b3b0500f44492aabcda82b': '156961282d1b08ada476c2f43785276e',
+    'fxyy': '',
+    'jcjg': '',
+    'zgfx14rfhsj': '',
+}
+
+response = requests.post('https://healthreport.zju.edu.cn/ncov/wap/default/save', cookies=cookies, headers=headers, data=data)
+
+
+
+
+**now_data 中新增的参数~:
+'7c19465cad12f1aad975c817b0ef3842': '1669259897',
+'8f28bca202b3b0500f44492aabcda82b': '156961282d1b08ada476c2f43785276e',
+
+**old_data 中删除的参数:
+'szsqsfybl': '0',
+'sfygtjzzfj': '0',
+'dbfb7190a31b5f8cd4a85f5a4975b89b': '1651977968',
+'1a7c5b2e52854a2480947880eabe1fe1': 'a3fefb4a32d22d9a3ff5827ac60bb1b0',
+'fjsj': '0',
+'jrdqjcqk': '',
+'jcwhryfs': '',
+'jchbryfs': '',
+'xjzd': '',
+'sfsfbh': '0',
+'jhfjrq': '',
+'jhfjjtgj': '',
+'jhfjhbcc': '',
+'jhfjsftjwh': '0',
+'jhfjsftjhb': '0',
+'gtjzzfjsj': '',
+'gwszgz': '',
+'gwszdd': '',
+'uid': '112775',
+'id': '61022272',
+'date': '20221124',
+'created': '1669260234',
+
+**更新的值有~:
+[k]: sfyxjzxgym
+	old: 1, now:
+[k]: sfjcqz
+	old: , now: 0
+[k]: jrsfqzfy
+	old: , now: 0
+[k]: sffrqjwdg
+	old: 0, now:
+[k]: internship
+	old: 1, now: 2
+[k]: sfsqhzjkk
+	old: 1, now:
+[k]: sfqtyyqjwdg
+	old: 0, now:
+[k]: sfbyjzrq
+	old: 5, now: 0
+[k]: jrsfqzys
+	old: , now: 0
+[k]: address
+	old: 浙江省宁波市鄞州区聚贤街道丹桂路浙江大学软件学院, now: 浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼
+[k]: jzxgymqk
+	old: 2, now: 0
+
+
+
+
+
+"""
+校外
+"""
+import requests
+
+cookies = {
+    'Hm_lpvt_48b682d4885d22a90111e46b972e3268': '1669427833',
+    'Hm_lvt_48b682d4885d22a90111e46b972e3268': '1669259900',
+    '_pc0': '9wE8G%2Bo82PYhmhy5BhNMq23H43jKR%2FYL2nm9iUeXm%2F0%3D',
+    'iPlanetDirectoryPro': 'k5M5ka4IoiQeq%2FKm7q3384RBcAtCaYmYAWrgg%2FL%2B%2BuKaK8fGYUTQuJoRWwNBpNUo1OTWzVzl2Gm%2BDlFHtP7HSTFMYo13QYTuR%2FIi92e24%2FVQLm7M7Zkv4uUP0L2dkNFev%2BgjiOyxE2saV7Im5CYo0GHHa2GVwFlQ6yjzbWyh0yirx5wXMgMplgo6wWTlWMDY%2BZMf%2Bb5jAqhSCQZQyIsEyq9W8YBcWQTh4FB%2F%2Bg5W9257%2FnBMIASq%2FNsb%2BPpWBCzOVxrcXQRx9l12rdw3kpAJI4NK2GorwjRv9BOnCfs9oUqnkC1Y51i7S%2FswgysfI%2FkQYBwX1k491qL%2FubKFS1muHIM4x5NlYHWoeiLkg7Djvvo%3D',
+    'eai-sess': '0im8rttludbebqkacipah7o0n4',
+    '_pv0': 'eFMEU7EBeYEST2oJrVD5n4u8sGiJlEUWbK81DHXV5swyFTgdFIkAgY47VpCwAZiQhltd%2FIMS93wyMLEBfbuROpTnJZECczaWgHSq2GrBNPv7iRvg8s4KV29%2FEPsbb2JN7IqN%2Fi40Klj6g9lMDFTyHceM6uAZ1b8Ey%2Fbi4TBJDhZts7uvlVmwnidjIweRvCVW9KFmVuS%2FVRh9bQAO0eLZfHMHsA6hoSageDgli6dx2nHx6zoPUKBPTvY%2BuwEnd3h2o1Rctn3KZG73xPHwR2knFFw6%2FXEcQrC2TTwLVS1LbE%2F62KBFoLNBQYYa6ZmSHSRj3oYZVt4uaUi7FpN25X7e7ds09UukE1rvFziYKhyuAPXqWXoHrBcnOkPKwhFIOHH78%2BrR3EFUljBjS3forMS7dVRm3FXcYeiF4gWCQsVazE0%3D',
+    '_csrf': 'S8mwplVi9KWoF2WQ0TlCeH2VHBkpteH7fJhcOt5WRaw%3D',
+    'UUkey': '6495adef0aa1e49ab1f331e2afba8732',
+}
+
+headers = {
+    'Host': 'healthreport.zju.edu.cn',
+    # Requests sorts cookies= alphabetically
+    # 'Cookie': 'Hm_lpvt_48b682d4885d22a90111e46b972e3268=1669427833; Hm_lvt_48b682d4885d22a90111e46b972e3268=1669259900; _pc0=9wE8G%2Bo82PYhmhy5BhNMq23H43jKR%2FYL2nm9iUeXm%2F0%3D; iPlanetDirectoryPro=k5M5ka4IoiQeq%2FKm7q3384RBcAtCaYmYAWrgg%2FL%2B%2BuKaK8fGYUTQuJoRWwNBpNUo1OTWzVzl2Gm%2BDlFHtP7HSTFMYo13QYTuR%2FIi92e24%2FVQLm7M7Zkv4uUP0L2dkNFev%2BgjiOyxE2saV7Im5CYo0GHHa2GVwFlQ6yjzbWyh0yirx5wXMgMplgo6wWTlWMDY%2BZMf%2Bb5jAqhSCQZQyIsEyq9W8YBcWQTh4FB%2F%2Bg5W9257%2FnBMIASq%2FNsb%2BPpWBCzOVxrcXQRx9l12rdw3kpAJI4NK2GorwjRv9BOnCfs9oUqnkC1Y51i7S%2FswgysfI%2FkQYBwX1k491qL%2FubKFS1muHIM4x5NlYHWoeiLkg7Djvvo%3D; eai-sess=0im8rttludbebqkacipah7o0n4; _pv0=eFMEU7EBeYEST2oJrVD5n4u8sGiJlEUWbK81DHXV5swyFTgdFIkAgY47VpCwAZiQhltd%2FIMS93wyMLEBfbuROpTnJZECczaWgHSq2GrBNPv7iRvg8s4KV29%2FEPsbb2JN7IqN%2Fi40Klj6g9lMDFTyHceM6uAZ1b8Ey%2Fbi4TBJDhZts7uvlVmwnidjIweRvCVW9KFmVuS%2FVRh9bQAO0eLZfHMHsA6hoSageDgli6dx2nHx6zoPUKBPTvY%2BuwEnd3h2o1Rctn3KZG73xPHwR2knFFw6%2FXEcQrC2TTwLVS1LbE%2F62KBFoLNBQYYa6ZmSHSRj3oYZVt4uaUi7FpN25X7e7ds09UukE1rvFziYKhyuAPXqWXoHrBcnOkPKwhFIOHH78%2BrR3EFUljBjS3forMS7dVRm3FXcYeiF4gWCQsVazE0%3D; _csrf=S8mwplVi9KWoF2WQ0TlCeH2VHBkpteH7fJhcOt5WRaw%3D; UUkey=6495adef0aa1e49ab1f331e2afba8732',
+    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'accept': 'application/json, text/javascript, */*; q=0.01',
+    'x-requested-with': 'XMLHttpRequest',
+    'accept-language': 'zh-CN,zh-Hans;q=0.9',
+    'origin': 'https://healthreport.zju.edu.cn',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15',
+    'referer': 'https://healthreport.zju.edu.cn/ncov/wap/default/index',
+}
+
+data = {
+    'sfymqjczrj': '0',
+    'zjdfgj': '',
+    'sfyrjjh': '0',
+    'cfgj': '',
+    'tjgj': '',
+    'nrjrq': '0',
+    'rjka': '',
+    'jnmddsheng': '',
+    'jnmddshi': '',
+    'jnmddqu': '',
+    'jnmddxiangxi': '',
+    'rjjtfs': '',
+    'rjjtfs1': '',
+    'rjjtgjbc': '',
+    'jnjtfs': '',
+    'jnjtfs1': '',
+    'jnjtgjbc': '',
+    'sfqrxxss': '1',
+    'sfqtyyqjwdg': '',
+    'sffrqjwdg': '',
+    'sfhsjc': '',
+    'zgfx14rfh': '0',
+    'zgfx14rfhdd': '',
+    'sfyxjzxgym': '',
+    'sfbyjzrq': '0',
+    'jzxgymqk': '0',
+    'campus': '',
+    'ismoved': '5',
+    'tw': '0',
+    'sfcxtz': '0',
+    'sfjcbh': '0',
+    'sfcxzysx': '0',
+    'qksm': '',
+    'sfyyjc': '0',
+    'jcjgqr': '0',
+    'remark': '',
+    'address': '浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼',
+    'geo_api_info': '{"type":"complete","position":{"Q":29.890032552084,"R":121.64019178602501,"lng":121.640192,"lat":29.890033},"location_type":"html5","message":"Get ipLocation failed.Get geolocation success.Convert Success.Get address success.","accuracy":35,"isConverted":true,"status":1,"addressComponent":{"citycode":"0574","adcode":"330212","businessAreas":[{"name":"梅墟","id":"330212","location":{"Q":29.890393,"R":121.65525400000001,"lng":121.655254,"lat":29.890393}}],"neighborhoodType":"","neighborhood":"","building":"","buildingType":"","street":"江南路","streetNumber":"1715号","country":"中国","province":"浙江省","city":"宁波市","district":"鄞州区","towncode":"330212018000","township":"聚贤街道"},"formattedAddress":"浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}',
+    'area': '浙江省 宁波市 鄞州区',
+    'province': '浙江省',
+    'city': '宁波市',
+    'sfzx': '0',
+    'sfjcwhry': '0',
+    'sfjchbry': '0',
+    'sfcyglq': '0',
+    'gllx': '',
+    'glksrq': '',
+    'jcbhlx': '',
+    'jcbhrq': '',
+    'bztcyy': '',
+    'sftjhb': '0',
+    'sftjwh': '0',
+    'sfjcqz': '0',
+    'jcqzrq': '',
+    'jrsfqzys': '0',
+    'jrsfqzfy': '0',
+    'sfyqjzgc': '0',
+    'sfsqhzjkk': '',
+    'sqhzjkkys': '1',
+    'gwszgzcs': '',
+    'szgj': '',
+    'internship': '1',
+    'szgjcs': '',
+    'verifyCode': '',
+    'd00e60dfb1c8d6213e2ceb50a7e1b0cc': '1669427832',
+    '9a8367310e1d12fe93d0fb3a79348e7e': '965a4dbd4188d84d599826d21272408d',
+    'fxyy': '',
+    'jcjg': '',
+    'zgfx14rfhsj': '',
+}
+
+response = requests.post('https://healthreport.zju.edu.cn/ncov/wap/default/save', cookies=cookies, headers=headers, data=data)
+
+
+
+
+
+**now_data 中新增的参数~:
+'d00e60dfb1c8d6213e2ceb50a7e1b0cc': '1669427832',
+'9a8367310e1d12fe93d0fb3a79348e7e': '965a4dbd4188d84d599826d21272408d',
+
+**old_data 中删除的参数:
+'szsqsfybl': '0',
+'sfygtjzzfj': '0',
+'dbfb7190a31b5f8cd4a85f5a4975b89b': '1651977968',
+'1a7c5b2e52854a2480947880eabe1fe1': 'a3fefb4a32d22d9a3ff5827ac60bb1b0',
+'fjsj': '0',
+'jrdqjcqk': '',
+'jcwhryfs': '',
+'jchbryfs': '',
+'xjzd': '',
+'sfsfbh': '0',
+'jhfjrq': '',
+'jhfjjtgj': '',
+'jhfjhbcc': '',
+'jhfjsftjwh': '0',
+'jhfjsftjhb': '0',
+'gtjzzfjsj': '',
+'gwszgz': '',
+'gwszdd': '',
+'uid': '112775',
+'id': '61022272',
+'date': '20221124',
+'created': '1669260234',
+
+**更新的值有~:
+[k]: jzxgymqk
+	old: 2, now: 0
+[k]: sfsqhzjkk
+	old: 1, now:
+[k]: sffrqjwdg
+	old: 0, now:
+[k]: geo_api_info
+	old: {"type":"complete","position":{"Q":29.890027669271,"R":121.64014078776097,"lng":121.640141,"lat":29.890028},"location_type":"html5","message":"Get ipLocation failed.Get geolocation success.Convert Success.Get address success.","accuracy":35,"isConverted":true,"status":1,"addressComponent":{"citycode":"0574","adcode":"330212","businessAreas":[{"name":"梅墟","id":"330212","location":{"Q":29.890393,"R":121.65525400000001,"lng":121.655254,"lat":29.890393}}],"neighborhoodType":"","neighborhood":"","building":"","buildingType":"","street":"江南路","streetNumber":"1715号","country":"中国","province":"浙江省","city":"宁波市","district":"鄞州区","towncode":"330212018000","township":"聚贤街道"},"formattedAddress":"浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}, now: {"type":"complete","position":{"Q":29.890032552084,"R":121.64019178602501,"lng":121.640192,"lat":29.890033},"location_type":"html5","message":"Get ipLocation failed.Get geolocation success.Convert Success.Get address success.","accuracy":35,"isConverted":true,"status":1,"addressComponent":{"citycode":"0574","adcode":"330212","businessAreas":[{"name":"梅墟","id":"330212","location":{"Q":29.890393,"R":121.65525400000001,"lng":121.655254,"lat":29.890393}}],"neighborhoodType":"","neighborhood":"","building":"","buildingType":"","street":"江南路","streetNumber":"1715号","country":"中国","province":"浙江省","city":"宁波市","district":"鄞州区","towncode":"330212018000","township":"聚贤街道"},"formattedAddress":"浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼","roads":[],"crosses":[],"pois":[],"info":"SUCCESS"}
+[k]: sfjcqz
+	old: , now: 0
+[k]: sfyxjzxgym
+	old: 1, now:
+[k]: jrsfqzys
+	old: , now: 0
+[k]: address
+	old: 浙江省宁波市鄞州区聚贤街道丹桂路浙江大学软件学院, now: 浙江省宁波市鄞州区聚贤街道江南路1715号浙江大学软件学院宁波分院教学楼
+[k]: ismoved
+	old: 0, now: 5
+[k]: sfqtyyqjwdg
+	old: 0, now:
+[k]: sfbyjzrq
+	old: 5, now: 0
+[k]: jrsfqzfy
+	old: , now: 0
+
+Process finished with exit code 0

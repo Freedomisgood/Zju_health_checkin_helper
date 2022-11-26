@@ -107,13 +107,13 @@ class HealthCheckInHelper(ZJULogin):
             "sfyrjjh": "0",
             "nrjrq": "0",
             "sfqrxxss": "1",
-            "sfqtyyqjwdg": "0",
-            "sffrqjwdg": "0",
+            "sfqtyyqjwdg": "",
+            "sffrqjwdg": "",
             "zgfx14rfh": "0",
-            "sfyxjzxgym": "1",
-            "sfbyjzrq": "5",
-            "jzxgymqk": "2",
-            "ismoved": "0",
+            "sfyxjzxgym": "",
+            "sfbyjzrq": "0",
+            "jzxgymqk": "0",
+            "ismoved": "5",
             "tw": "0",
             "sfcxtz": "0",
             "sfjcbh": "0",
@@ -127,10 +127,10 @@ class HealthCheckInHelper(ZJULogin):
             "sftjhb": "0",
             "sftjwh": "0",
             "sfyqjzgc": "0",
-            "sfsqhzjkk": "1",
+            "sfsqhzjkk": "",
             "sqhzjkkys": "1",
-            "szsqsfybl": "0",
-            "sfygtjzzfj": "0",
+            # "szsqsfybl": "0",
+            # "sfygtjzzfj": "0",
             "dbfb7190a31b5f8cd4a85f5a4975b89b": "1651977968",
             "1a7c5b2e52854a2480947880eabe1fe1": "a3fefb4a32d22d9a3ff5827ac60bb1b0",
             # 2022年8月12日新增的变量
@@ -159,27 +159,27 @@ class HealthCheckInHelper(ZJULogin):
             'jcbhrq': '',
             'fxyy': '',
             'bztcyy': '',
-            'fjsj': '0',
-            'jrsfqzys': '',
-            'jrsfqzfy': '',
-            'jrdqjcqk': '',
-            'sfjcqz': '',
+            # 'fjsj': '0',
+            'jrsfqzys': '0',
+            'jrsfqzfy': '0',
+            # 'jrdqjcqk': '',
+            'sfjcqz': '0',
             'jcqzrq': '',
-            'jcwhryfs': '',
-            'jchbryfs': '',
-            'xjzd': '',
+            # 'jcwhryfs': '',
+            # 'jchbryfs': '',
+            # 'xjzd': '',
             'szgj': '',
-            'sfsfbh': '0',
-            'jhfjrq': '',
-            'jhfjjtgj': '',
-            'jhfjhbcc': '',
-            'jhfjsftjwh': '0',
-            'jhfjsftjhb': '0',
-            'gtjzzfjsj': '',
-            'gwszgz': '',
+            # 'sfsfbh': '0',
+            # 'jhfjrq': '',
+            # 'jhfjjtgj': '',
+            # 'jhfjhbcc': '',
+            # 'jhfjsftjwh': '0',
+            # 'jhfjsftjhb': '0',
+            # 'gtjzzfjsj': '',
+            # 'gwszgz': '',
             'gwszgzcs': '',
             'internship': '1',
-            'gwszdd': '',
+            # 'gwszdd': '',
             'szgjcs': '',
             'zgfx14rfhsj': '',
             # 占位符
@@ -198,8 +198,12 @@ class HealthCheckInHelper(ZJULogin):
         }
         # 如果不在校内的话, 下述参数是不一样的
         if not campus:
+            # 所在校区
             data["campus"] = ""
+            # 是否在校
             data["sfzx"] = "0"
+            # 如果时校外的话, 是否有离开校区所在城市的外出安排 ==> 不为默认的0
+            data["ismoved"] = "5"
         return data
 
     def take_in(self, geo_info: dict, campus: str, tryTimes: int = 3):
